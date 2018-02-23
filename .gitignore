@@ -1,0 +1,13 @@
+
+# JetBrains Idea
+.idea/
+
+# Python
+*.pyc
+
+# Django
+*.log
+*.pot
+
+# Database
+db.sqlite3
