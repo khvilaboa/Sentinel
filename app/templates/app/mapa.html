@@ -100,7 +100,9 @@ d3.json("/app/cameras_json", function(error, data) {
           .attr("r", 4.5)
           .attr("cx", padding)
           .attr("cy", padding)
-          .on("mouseover",function(d){ alert(d.value[3]); });
+          .on("mouseover",function(d){
+          alert(d.value[3]);
+      });
 
       // Add a label.
       marker.append("text")
