@@ -6,6 +6,8 @@ app_name = 'app'
 urlpatterns = [
     # ex: /app/
     url(r'^$', views.index, name='index'),
+    # ex: /app/cameras_json
+    url(r'^cameras_json/$', views.cameras_json, name='cameras_json'),
     # ex: /app/5/
     url(r'^(?P<question_id>[0-9]+)/$', views.detail, name='detail'),
     # ex: /app/5/results/

@@ -27,4 +27,4 @@ class Camera(models.Model):
     latitude = models.IntegerField(default=0)
 
     def __str__(self):
-        return description
+        return self.description
