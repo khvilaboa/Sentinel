@@ -14,6 +14,19 @@ html, body, #map {
   position: absolute;
 }
 
+<!-- @-webkit-keyframes redPulse { -->
+<!--           from { -->
+<!--             fill: #ff8e8e; -->
+<!--             -webkit-box-shadow: 0 0 9px #333; } -->
+        
+<!--           50% { -->
+<!--             fill: #ff4444; -->
+<!--             -webkit-box-shadow: 0 0 18px #91bd09; } -->
+        
+<!--           to { -->
+<!--             fill: #ff8e8e; -->
+<!--             -webkit-box-shadow: 0 0 9px #333; } } -->
+
 .stations svg {
   width: 60px;
   height: 20px;
@@ -25,6 +38,18 @@ html, body, #map {
   fill: brown;
   stroke: black;
   stroke-width: 1.5px;
+  <!-- -webkit-animation-name: redPulse; -->
+  <!-- -webkit-animation-duration: 2s; -->
+  <!-- -webkit-animation-iteration-count: infinite; -->
+}
+
+.marker_text {
+          fill: black;
+          visibility: hidden; }
+
+ .stations circle:hover {
+  fill: red;
+  cursor: pointer !important;
 }
 
 </style>
@@ -40,11 +65,11 @@ var map = new google.maps.Map(d3.select("#map").node(), {
   mapTypeId: google.maps.MapTypeId.TERRAIN
 });
 
-<!-- google.maps.event.addListener(marker, 'click', (function(marker, i) { -->
-<!--         return function() { -->
-<!--           alert("hola");) -->
-<!--         } -->
-<!--       }); -->
+
+<!-- google.maps.event.addListener(map, 'click', function(event) { -->
+<!--  alert("hola"); -->
+<!-- }); -->
+
 
 // Load the station data. When the data comes back, create an overlay.
 d3.json("/app/cameras_json", function(error, data) {
@@ -54,7 +79,7 @@ d3.json("/app/cameras_json", function(error, data) {
 
   // Add the container when the overlay is added to the map.
   overlay.onAdd = function() {
-    var layer = d3.select(this.getPanes().overlayLayer).append("div")
+    var layer = d3.select(this.getPanes().overlayMouseTarget).append("div")
         .attr("class", "stations");
 
     // Draw each marker as a separate SVG element.
@@ -64,10 +89,9 @@ d3.json("/app/cameras_json", function(error, data) {
           padding = 10;
 
       var marker = layer.selectAll("svg")
-
           .data(d3.entries(data))
           .each(transform) // update existing markers
-        .enter().append("svg")
+          .enter().append("svg")
           .each(transform)
           .attr("class", "marker");
 
@@ -75,14 +99,39 @@ d3.json("/app/cameras_json", function(error, data) {
       marker.append("circle")
           .attr("r", 4.5)
           .attr("cx", padding)
-          .attr("cy", padding);
+          .attr("cy", padding)
+          .on("mouseover",function(d){
+            //  alert(d.value[3]);
+}).on("click", function(d) {
+
+var long = d.value[0];
+var lat = d.value[1];
+
+console.log(d3.entries(data).length);
+var kmRango = 3;
+
+d3.selectAll(".marker").each(function(p){
+
+var long2 = p.value[0];
+var lat2 = p.value[1];
+
+var distance = getDistanceFromLatLonInKm(lat, long, lat2, long2);
+
+if (distance < kmRango) { 
+	d3.select(this).select("circle").style("fill","blue");
+}
+})
+;
+
+});
 
       // Add a label.
       marker.append("text")
           .attr("x", padding + 7)
           .attr("y", padding)
           .attr("dy", ".31em")
-          .text(function(d) { return d.key; });
+			// .text(function(d) { return d.key; })
+			;
 
       function transform(d) {
         d = new google.maps.LatLng(d.value[1], d.value[0]);
@@ -91,6 +140,40 @@ d3.json("/app/cameras_json", function(error, data) {
             .style("left", (d.x - padding) + "px")
             .style("top", (d.y - padding) + "px");
       }
+
+      // provides node animation for mouseover
+          function expandNode() {
+            d3.select(this).transition()
+                            .duration(100)
+                            .attr("r",7)
+          };
+    
+    
+          // provides node animation for mouseout
+          function contractNode(){
+            d3.select(this).transition()
+                            .duration(100)
+                            .attr("r",4.5)
+};
+
+
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
     };
   };
 

@@ -1,3 +1,8 @@
+{% extends "./template.html" %}
+
+{% block content %}
+<h1>Content goes here</h1>
+
 {% if latest_question_list %}
     <ul>
     {% for question in latest_question_list %}
@@ -6,4 +11,6 @@
     </ul>
 {% else %}
     <p>No polls are available.</p>
-{% endif %}
+    {% endif %}
+
+    {% endblock %}
