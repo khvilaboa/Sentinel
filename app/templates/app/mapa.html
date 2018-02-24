@@ -120,6 +120,9 @@ var distance = getDistanceFromLatLonInKm(lat, long, lat2, long2);
 if (distance < kmRango) { 
 	d3.select(this).select("circle").style("fill","blue");
 }
+else {
+	d3.select(this).select("circle").style("fill","brown");
+}
 })
 ;
 
