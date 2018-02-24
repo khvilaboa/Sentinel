@@ -12,9 +12,18 @@ def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
     context = {
         'latest_question_list': latest_question_list,
+        'page_num':1,
+        'page_title': "Inicio"
     }
     return render(request, 'app/index.html', context)
-	
+
+def view(request):
+    context = {
+        'page_num':2,
+        'page_title':"Ver info chula"
+    }
+    return render(request, 'app/view.html', context)
+
 def detail(request, question_id):
     question = get_object_or_404(Question, pk = question_id)
     return render(request, 'app/detail.html', {'question': question})
