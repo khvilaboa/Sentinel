@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-from .models import Question
+from .models import Question, Camera
 
 # Create your views here.
 def index(request):
@@ -49,3 +49,15 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('app:results', args=(question.id,)))
+	
+def cameras_json(request):
+    """data = Play.objects.all() \
+        .extra(select={'month': connections[Play.objects.db].ops.date_trunc_sql('month', 'date')}) \
+        .values('month') \
+        .annotate(count_items=Count('id'))"""
+    data = {c.description: [c.longitude, c.latitude,c.num, c.url] for c in Camera.objects.all()}
+    #data = [{"type": "Cameras", "objects": {}}]
+    return JsonResponse(data, safe=False)
+
+def map(request):
+    return render(request, 'app/mapa.html')
