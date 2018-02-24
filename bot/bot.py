@@ -4,13 +4,16 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 updater = Updater(token='470195902:AAEsYMKz9jwypqfEMw8nOPAxF6QhyzQuETY')  # @TrafficSentinelBot
 dispatcher = updater.dispatcher
 
+COORDS_URL = "localhost:8000/app/map?long={long}&lang={lat}"
+
 def start(bot, update):
 	update.message.reply_text("Starting...")
 
 	
 def location(bot, update):
 	loc = update.message.location
-	update.message.reply_text("%f, %f" % (loc.latitude, loc.longitude))
+	url = COORDS_URL.format(long = loc.longitude, lat = loc.latitude)
+	update.message.reply_text(url)
 
 # Handlers
 dispatcher.add_handler(CommandHandler('start', start))
