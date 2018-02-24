@@ -49,3 +49,6 @@ def cameras_json(request):
     data = {c.description: [c.longitude, c.latitude,c.num, c.url] for c in Camera.objects.all()}
     #data = [{"type": "Cameras", "objects": {}}]
     return JsonResponse(data, safe=False)
+
+def map(request):
+    return render(request, 'app/mapa.html')
