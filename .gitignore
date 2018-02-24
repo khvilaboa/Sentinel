@@ -10,7 +10,8 @@
 *.pot
 
 # Database
-db.sqlite3
+#db.sqlite3
 
 pruebas/
 .DS_Store
+
